@@ -38,8 +38,21 @@ def add_reads(illumina_reads, library, r1_phase, r2_phase, rc_flag):
         illumina_reads.append(r)
 
 def plot_reads(reads, read_length, rc_flag):
-    pass
-    # To Do
+    fig, ax = plt.subplots(figsize=(12,6))
+    l = []
+
+    for i in range(read_length):
+        base_count = collections.defaultdict(int)
+        for read in reads:
+            if rc_flag:
+                base_count[read[-i]] += 1
+            else:
+                base_count[read[i]] += 1
+        l.append(base_count)
+    df = pd.DataFrame(l)
+    df = df.div(df.sum(axis=1), axis=0)
+    for base in ("ACGT"):
+        ax.plot(df[base], ".", linewidth=1)
         
 @dataclass(eq=True, frozen=True) # set eq and frozen to True so it will be hashable
 class Primer():
